@@ -86,7 +86,7 @@ def shell(path, title, desc, body, cur="", extra_head=""):
 <nav aria-label="Main">{nav("/","Home")}{nav("/inventory.html","Inventory")}{nav("/quality.html","Quality")}{nav("/terms.html","Terms")}{nav("/contact.html","Contact")}<a class="btn" href="/rfq.html">Request for quote</a></nav></div></header>
 <main id="main">{body}</main>
 <footer class="site"><div class="wrap"><div class="foot"><img class="foot-mark" src="/assets/logo-mark.png" alt="SC – Strat Com" width="128" height="132">
-<div class="fcol"><p><strong>Strategic Components, LLC</strong><br>Doing business as Strat Com</p><address>1234 Front Street<br>Town, CA 12345</address></div>
+<div class="fcol"><p><strong>Strategic Components, LLC</strong><br>Doing business as Strat Com</p><address>2221 St. George Lane<br>Chico, CA 95926</address></div>
 <div class="fcol"><p><strong>Contact</strong><br><a href="tel:1-888-888-888">1-888-888-888</a><br><a href="mailto:sales@strategiccomponent.com">sales@strategiccomponent.com</a><br><a href="mailto:info@strategiccomponent.com">info@strategiccomponent.com</a></p></div>
 <div class="fcol"><p><strong>Site</strong><br><a href="/inventory.html">Inventory</a><br><a href="/quality.html">Quality Assurance</a><br><a href="/terms.html">Terms</a><br><a href="/contact.html">Contact</a></p></div></div>
 <p class="fine">&copy; {datetime.date.today().year} Strategic Components, LLC. All rights reserved.</p>
@@ -229,7 +229,7 @@ def main():
 <dt>General inquiries</dt><dd><a href="mailto:info@strategiccomponent.com">info@strategiccomponent.com</a></dd>
 <dt>Management</dt><dd><a href="mailto:robyjones@strategiccomponent.com">robyjones@strategiccomponent.com</a></dd>
 <dt>Telephone</dt><dd><a href="tel:1-888-888-888">1-888-888-888</a></dd>
-<dt>Address</dt><dd>1234 Front Street<br>Town, CA 12345</dd>
+<dt>Address</dt><dd>2221 St. George Lane<br>Chico, CA 95926</dd>
 </dl><p><a class="btn solid" href="/rfq.html">Request for quote</a></p></section>''', cur="/contact.html"))
 
     write("/terms.html", shell("/terms.html", "Quote and Sales Terms | Strat Com",
@@ -258,8 +258,8 @@ TERMS = '''
 <h2>Terms of sale</h2>
 <ol class="clauses">
 <li><strong>Orders and payment.</strong> The minimum order is $250. Payment terms are prepayment unless otherwise specified. A convenience fee of 3% applies to all orders paid by credit card. Past-due accounts are subject to a late charge of 1.5% per month.</li>
-<li><strong>Delivery.</strong> All items are offered EXW (ex works) from our shipping location, subject to prior sale and clerical error.</li>
-<li><strong>Condition and certification.</strong> Items are offered in commercial New Surplus (NS) condition unless otherwise noted. NS condition is certified visually as to kind, count, condition and identification number, and is accompanied by our certificate of conformance (C of C). Unless specifically noted, a quote does not include FAA 8130 certification or OEM trace documentation. An item quoted in AR condition has been used and may require repair or overhaul prior to installation. Any label copy furnished with a quote is representative only, and a quoted quantity may include additional contract numbers or manufacturers.</li>
+<li><strong>Delivery.</strong> All items are offered ex works from our shipping location, subject to prior sale and clerical error.</li>
+<li><strong>Condition and certification.</strong> Items are offered in commercial New Surplus condition unless otherwise noted. New Surplus condition is certified visually as to kind, count, condition and identification number, and is accompanied by our certificate of conformance. Unless specifically noted, a quote does not include FAA 8130 certification or OEM trace documentation. An item quoted in AR condition has been used and may require repair or overhaul prior to installation. Any label copy furnished with a quote is representative only, and a quoted quantity may include additional contract numbers or manufacturers.</li>
 <li><strong>Warranty and returns.</strong> Unless otherwise specified, items carry a 90-day warranty. Items must be examined within seven days of receipt, and an RMA number must be obtained from Strat Com before any return. Strat Com does not issue cash refunds; returns are eligible for exchange or credit only. Unless a return results from our error, a restocking fee of 50% applies to special order items and 25% to all other items.</li>
 </ol>
 
@@ -279,10 +279,10 @@ QUALITY = '''
 <p>The Strat Com sourcing department specializes in the procurement of obsolete and discontinued components. We draw on our own spare parts inventory and a network of trusted suppliers around the world, and we support thousands of OEMs. Requests range from power supplies and industrial computers to radar and sensor equipment, across many classifications.</p>
 
 <h2>Verification and quality control</h2>
-<p>Each part we supply is covered by a warranty of at least 90 days, as set out in our <a href="/terms.html">quote and sales terms</a>. Before delivery, every part undergoes in-house verification of its NSN and part number against the Federal Logistics Information Service (FLIS) database, at no charge to the purchaser, together with quality assurance review and signature testing. Each part is accompanied by a certificate of conformance (C of C).</p>
+<p>Each part we supply is covered by a warranty of at least 90 days, as set out in our <a href="/terms.html">quote and sales terms</a>. Before delivery, every part undergoes in-house verification of its NSN and part number against the Federal Logistics Information Service database, at no charge to the purchaser, together with quality assurance review and signature testing. Each part is accompanied by a certificate of conformance.</p>
 
 <h2>Technical library</h2>
-<p>Strat Com maintains a private technical library that is among the most extensive in the industry, covering a wide range of aircraft and engines. The library includes prints and drawings, technical orders, overhaul manuals, work scopes, instructional data, Time Compliance Technical Orders (TCTOs) and illustrated parts manuals. It also holds kit information, including cure-date kits, overhaul kits and quick engine change (QEC) kits.</p>
+<p>Strat Com maintains a private technical library that is among the most extensive in the industry, covering a wide range of aircraft and engines. The library includes prints and drawings, technical orders, overhaul manuals, work scopes, instructional data, Time Compliance Technical Orders and illustrated parts manuals. It also holds kit information, including cure-date kits, overhaul kits and quick engine change kits.</p>
 <p>We hold technical support data for McDonnell Douglas and General Electric products, which assists us in resolving engineering questions as they arise, and we maintain resources to remain informed of modifications and new technology.</p>
 
 <p>To request a quotation, submit the NSN or part number.</p>
