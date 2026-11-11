@@ -85,10 +85,10 @@ def shell(path, title, desc, body, cur="", extra_head=""):
 <header class="site"><div class="wrap"><a class="brand" href="/"><img src="/assets/logo.png" alt="Strat Com – Strategic Components, LLC" width="226" height="62"></a>
 <nav aria-label="Main">{nav("/","Home")}{nav("/inventory.html","Inventory")}{nav("/quality.html","Quality")}{nav("/terms.html","Terms")}{nav("/contact.html","Contact")}<a class="btn" href="/rfq.html">Request for quote</a></nav></div></header>
 <main id="main">{body}</main>
-<footer class="site"><div class="wrap"><div class="foot"><img class="foot-mark" src="/assets/logo-mark.png" alt="SC – Strat Com" width="128" height="132">
+<footer class="site"><div class="wrap"><div class="foot"><img class="foot-mark" src="/assets/logo-box.svg" alt="SC – Strat Com" width="132" height="132">
 <div class="fcol"><p><strong>Strategic Components, LLC</strong><br>Doing business as Strat Com</p><address>2221 St. George Lane<br>Chico, CA 95926</address></div>
 <div class="fcol"><p><strong>Contact</strong><br><a href="tel:1-888-888-888">1-888-888-888</a><br><a href="mailto:sales@strategiccomponent.com">sales@strategiccomponent.com</a><br><a href="mailto:info@strategiccomponent.com">info@strategiccomponent.com</a></p></div>
-<div class="fcol"><p><strong>Site</strong><br><a href="/inventory.html">Inventory</a><br><a href="/quality.html">Quality Assurance</a><br><a href="/terms.html">Terms</a><br><a href="/contact.html">Contact</a></p></div></div>
+<div class="fcol"><p><strong>Site</strong><br><a href="/inventory.html">Inventory</a><br><a href="/quality.html">Quality Assurance</a><br><a href="/terms.html">Terms</a><br><a href="/data-centers.html">Data Centers</a><br><a href="/contact.html">Contact</a></p></div></div>
 <p class="fine">&copy; {datetime.date.today().year} Strategic Components, LLC. All rights reserved.</p>
 <!-- TODO: add CAGE code and SAM registration here -->
 </div></footer><script src="/assets/site.js"></script></body></html>'''
@@ -190,7 +190,7 @@ def main():
 
     # home
     org = jsonld({"@context": "https://schema.org", "@type": "Organization", "name": "Strat Com",
-                  "legalName": "Strategic Components, LLC", "url": BASE + "/", "logo": BASE + "/assets/logo-mark.png",
+                  "legalName": "Strategic Components, LLC", "url": BASE + "/", "logo": BASE + "/assets/logo-box-512.png",
                   "email": "sales@strategiccomponent.com"})
     write("/index.html", shell("/index.html", "Strat Com | Defense and Aerospace Parts Sourcing",
         "Strategic Components, LLC supplies components for defense and aerospace programs. Search the catalog by NSN, part number or description and submit a request for quote.", f'''
@@ -240,8 +240,12 @@ def main():
         "How Strategic Components, LLC verifies and backs its parts, and the private technical library behind our sourcing of obsolete and hard-to-find components.",
         QUALITY, cur="/quality.html"))
 
+    write("/data-centers.html", shell("/data-centers.html", "AI Data Center Components | Strat Com",
+        "Surplus and hard-to-find aerospace components for AI data center projects: turbine components, heat management and gear boxes, with quick turnaround. Submit a request for quote.",
+        DATACENTERS, cur="/data-centers.html"))
+
     # housekeeping files
-    urls = ["/", "/inventory.html", "/rfq.html", "/quality.html", "/terms.html", "/contact.html"] + [page_url(i) for i in range(2, total + 1)]
+    urls = ["/", "/inventory.html", "/rfq.html", "/quality.html", "/terms.html", "/contact.html", "/data-centers.html"] + [page_url(i) for i in range(2, total + 1)]
     write("/CNAME", "strategiccomponent.com\n")
     write("/.nojekyll", "")
     write("/.gitignore", "source/\n__pycache__/\n")
@@ -273,10 +277,34 @@ TERMS = '''
 <!-- TODO: replace "our shipping location" with the ship-from city and state once confirmed. -->
 '''
 
+DATACENTERS = '''
+<section class="wrap pg narrow terms"><h1>Aerospace components for AI data center projects</h1>
+<p>Strat Com supplies surplus and hard-to-find aerospace components for the turbine, thermal and drive systems used in AI data center power and cooling projects, with the quick turnaround that project schedules require.</p>
+
+<h2>What we supply</h2>
+<dl class="ruled">
+<dt>Turbine components</dt><dd>Blades, nozzles, compressors and related components for gas turbine and aeroderivative engine assemblies.</dd>
+<dt>Heat management</dt><dd>Coolers, heat exchangers, fans, blowers, thermostats and ducting for cooling and temperature control.</dd>
+<dt>Fluid handling</dt><dd>Pumps, valves, manifolds, hoses, couplings, filters and accumulators for cooling and fuel systems.</dd>
+<dt>Gear boxes and drives</dt><dd>Gear boxes, gears, bearings, seals and power transmission components.</dd>
+<dt>Electrical power</dt><dd>Transformers, circuit breakers, relays, contactors, generators, motors, converters and inverters.</dd>
+<dt>Controls and sensing</dt><dd>Actuators, controllers, sensors, connectors and cable assemblies.</dd>
+<dt>Related hardware</dt><dd>Structural components, fasteners, electronic parts and control panels.</dd>
+</dl>
+<p>We will work with you to meet your needs, as they arise.</p>
+<!-- TODO: confirm the categories above match the product lines to be advertised. -->
+
+<h2>Quick turnaround for project schedules</h2>
+<p>Data center projects run on short timelines. We search our own spare parts inventory and our network of trusted suppliers around the world, and we respond to each request for quote promptly. Each part is verified against its NSN and part number and is accompanied by a certificate of conformance, and items carry the warranty set out in our <a href="/terms.html">quote and sales terms</a>.</p>
+<p>To begin, submit the NSN or part number, the quantity required and the date you need delivery. If you do not have a part number, describe the item in the additional information field and we will source it. You may also <a href="/inventory.html">search the inventory catalog</a>.</p>
+<p><a class="btn solid" href="/rfq.html">Request for quote</a></p>
+</section>
+'''
+
 # ---------------------------------------------------------------- quality page
 QUALITY = '''
 <section class="wrap pg narrow terms"><h1>Quality assurance</h1>
-<p>The Strat Com sourcing department specializes in the procurement of obsolete and discontinued components. We draw on our own spare parts inventory and a network of trusted suppliers around the world, and we support thousands of OEMs. Requests range from power supplies and industrial computers to radar and sensor equipment, across many classifications.</p>
+<p>The Strat Com sourcing department specializes in the procurement of obsolete and discontinued components. We draw on our own spare parts inventory and a network of trusted suppliers around the world, and we support dozens of OEMs. Capabilities range from nuts and bolts, transistors and resistors, to fire control panels and structural components.</p>
 
 <h2>Verification and quality control</h2>
 <p>Each part we supply is covered by a warranty of at least 90 days, as set out in our <a href="/terms.html">quote and sales terms</a>. Before delivery, every part undergoes in-house verification of its NSN and part number against the Federal Logistics Information Service database, at no charge to the purchaser, together with quality assurance review and signature testing. Each part is accompanied by a certificate of conformance.</p>
