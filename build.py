@@ -69,7 +69,17 @@ def load():
     return items, skipped, len(rows) - 1
 
 # ---------------------------------------------------------------- layout
-def shell(path, title, desc, body, cur="", extra_head=""):
+def bp_list():
+    """Schematic backdrops: every assets/bp/s*.png is picked up automatically (name:width:height)."""
+    d = os.path.join(ROOT, "assets", "bp"); out = []
+    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        if f.startswith("s") and f.endswith(".png"):
+            with open(os.path.join(d, f), "rb") as fh:
+                h = fh.read(24)
+            out.append(f"{f}:{int.from_bytes(h[16:20], 'big')}:{int.from_bytes(h[20:24], 'big')}")
+    return ",".join(out)
+
+def shell(path, title, desc, body, cur="", extra_head="", bp=True):
     def nav(href, label):
         return f'<a href="{href}"{" aria-current=page" if cur == href else ""}>{label}</a>'
     canon = BASE + path.replace("index.html", "")
@@ -84,10 +94,10 @@ def shell(path, title, desc, body, cur="", extra_head=""):
 <a class="skip" href="#main">Skip to content</a>
 <header class="site"><div class="wrap"><a class="brand" href="/"><img src="/assets/logo.png" alt="Strat Com – Strategic Components, LLC" width="226" height="62"></a>
 <nav aria-label="Main">{nav("/","Home")}{nav("/inventory.html","Inventory")}{nav("/quality.html","Quality")}{nav("/terms.html","Terms")}{nav("/contact.html","Contact")}<a class="btn" href="/rfq.html">Request for quote</a></nav></div></header>
-<main id="main">{body}</main>
-<footer class="site"><div class="wrap"><div class="foot"><img class="foot-mark" src="/assets/logo-box.svg" alt="SC – Strat Com" width="132" height="132">
-<div class="fcol"><p><strong>Strategic Components, LLC</strong><br>Doing business as Strat Com</p><address>2221 St. George Lane<br>Chico, CA 95926</address></div>
-<div class="fcol"><p><strong>Contact</strong><br><a href="tel:1-888-888-888">1-888-888-888</a><br><a href="mailto:sales@strategiccomponent.com">sales@strategiccomponent.com</a><br><a href="mailto:info@strategiccomponent.com">info@strategiccomponent.com</a></p></div>
+<main id="main"{' class="bp"' if bp else ""}>{('<div class="bp-bg" aria-hidden="true" data-bps="' + bp_list() + '"></div>') if bp else ""}{body}</main>
+<footer class="site"><div class="wrap"><div class="foot"><a class="foot-home" href="/" aria-label="Strat Com home"><img class="foot-mark" src="/assets/logo-box.svg" alt="SC – Strat Com" width="132" height="132"></a>
+<div class="fcol"><p><strong>Strategic Components, LLC</strong><br>Doing business as Strat Com</p><address>2221 St. George Lane, Suite 7<br>Chico, CA 95926</address></div>
+<div class="fcol"><p><strong>Contact</strong><br><a href="tel:1-888-888-8888">1-888-888-8888</a><br><a href="mailto:sales@strategiccomponent.com">sales@strategiccomponent.com</a><br><a href="mailto:info@strategiccomponent.com">info@strategiccomponent.com</a></p></div>
 <div class="fcol"><p><strong>Site</strong><br><a href="/inventory.html">Inventory</a><br><a href="/quality.html">Quality Assurance</a><br><a href="/terms.html">Terms</a><br><a href="/data-centers.html">Data Centers</a><br><a href="/contact.html">Contact</a></p></div></div>
 <p class="fine">&copy; {datetime.date.today().year} Strategic Components, LLC. All rights reserved.</p>
 <!-- TODO: add CAGE code and SAM registration here -->
@@ -165,7 +175,8 @@ def main():
 <p class="lede">{n:,} listings, sorted by part number. This page lists {esc(first)} to {esc(last)}, including {esc(common_txt)}. Pricing and availability are provided by quotation.</p>
 {SEARCH_FORM.format(v="")}
 <div id="results" aria-live="polite"></div>
-<div id="browse">{table}</div></section>'''
+<div id="browse">{table}</div></section>
+<section class="reel" data-reel="48" aria-hidden="true"></section>'''
         else:
             title = f"Parts {first} to {last} | Strat Com"
             meta = (f"{len(chunk):,} defense and aerospace parts, part numbers {first} through {last}"
@@ -179,7 +190,8 @@ def main():
 <h1>Parts {esc(first)} to {esc(last)}</h1>
 <p class="lede">{len(chunk):,} listings, sorted by part number. Items on this page include {esc(common_txt)}. Pricing and availability are provided by quotation.</p>
 {SEARCH_FORM.format(v="")}
-{table}</section>'''
+{table}</section>
+<section class="reel" data-reel="48" aria-hidden="true"></section>'''
         write(path, shell(path, title, meta, body, cur="/inventory.html", extra_head=head_links))
 
     # search index (public fields only)
@@ -192,17 +204,23 @@ def main():
     org = jsonld({"@context": "https://schema.org", "@type": "Organization", "name": "Strat Com",
                   "legalName": "Strategic Components, LLC", "url": BASE + "/", "logo": BASE + "/assets/logo-box-512.png",
                   "email": "sales@strategiccomponent.com"})
-    write("/index.html", shell("/index.html", "Strat Com | Defense and Aerospace Parts Sourcing",
-        "Strategic Components, LLC supplies components for defense and aerospace programs. Search the catalog by NSN, part number or description and submit a request for quote.", f'''
-<section class="hero"><div class="wrap"><h1>Defense and aerospace parts sourcing</h1>
-<p class="lede">Strategic Components, LLC supplies components for defense and aerospace programs. Search {n:,} catalog listings by NSN, part number or description, or submit a request for quote for any item not listed.</p>
+    write("/index.html", shell("/index.html", "Strat Com | Aerospace and Defense Components",
+        "Strategic Components, LLC supplies obsolete and hard-to-find components to the aerospace and defense industries, and continuous-service parts for AI data center applications. Search the catalog by NSN, part number or description and submit a request for quote.", f'''
+<section class="hero photo"><div class="wrap"><h1>Obsolete and hard-to-find components for aerospace and defense</h1>
+<p class="lede">Strategic Components, LLC supplies obsolete and hard-to-find components to the aerospace and defense industries. <span class="more">We are extending that supply to continuous-service parts for AI data center applications and the quick-start energy demands that follow. Search {n:,} catalog listings by NSN, part number or description, or submit a request for quote for any item not listed.</span></p>
 {SEARCH_FORM.format(v="")}</div></section>
-<section class="band"><div class="wrap"><h2>Procurement</h2>
+<section class="band"><div class="wrap"><h2>Capabilities</h2>
+<p class="prose">Capabilities range from nuts and bolts, resistors and transistors, to fire control panels, swash plate assemblies and airframe components, and everything in between.</p>
+<details class="fold" open><summary><h2>Markets</h2></summary>
+<dl class="ruled"><dt>Aerospace and defense</dt><dd>Obsolete, discontinued and hard-to-find components, drawn from our own spare parts inventory and a network of trusted suppliers worldwide. See <a href="/quality.html">quality assurance</a>.</dd>
+<dt>AI data center power</dt><dd>Parts for continuous service and for quick-start generation, including converted jet engines and aeroderivative turbines. See <a href="/data-centers.html">data centers</a>.</dd></dl></details>
+<details class="fold" open><summary><h2>Procurement</h2></summary>
 <dl class="ruled"><dt>Catalog</dt><dd>Each listing identifies the NSN, part number, manufacturer, description and end use.</dd>
 <dt>Pricing</dt><dd>Pricing and availability are provided by quotation. Please submit the NSN or part number and the quantity required.</dd>
-<dt>Requirements</dt><dd>Please indicate on the request whether it is for immediate purchase or in support of a government bid.</dd></dl></div></section>
+<dt>Requirements</dt><dd>Please indicate on the request whether it is for immediate purchase or in support of a government bid.</dd></dl></details></div></section>
+<section class="pband"><div class="wrap"><h2>Sustaining American-built systems, from legacy fleets to future power</h2><p>From the platforms that built the supply chain to the turbines that will power what comes next, we source the parts that keep them in service.</p></div></section>
 <section class="cta"><div class="wrap"><h2>Item not listed in the catalog?</h2><a class="btn solid" href="/rfq.html">Request for quote</a></div></section>''',
-        cur="/", extra_head=org))
+        cur="/", extra_head=org, bp=False))
 
     write("/rfq.html", shell("/rfq.html", "Request for Quote | Strat Com",
         "Submit a request for quote to Strategic Components, LLC. Include the NSN or part number and the quantity required.", '''
@@ -227,9 +245,9 @@ def main():
 <section class="wrap pg narrow"><h1>Contact</h1><p class="lede">Strategic Components, LLC, doing business as Strat Com.</p>
 <dl class="ruled"><dt>Quotations and sales</dt><dd><a href="mailto:sales@strategiccomponent.com">sales@strategiccomponent.com</a></dd>
 <dt>General inquiries</dt><dd><a href="mailto:info@strategiccomponent.com">info@strategiccomponent.com</a></dd>
-<dt>Management</dt><dd><a href="mailto:robyjones@strategiccomponent.com">robyjones@strategiccomponent.com</a></dd>
-<dt>Telephone</dt><dd><a href="tel:1-888-888-888">1-888-888-888</a></dd>
-<dt>Address</dt><dd>2221 St. George Lane<br>Chico, CA 95926</dd>
+<dt>Procurement</dt><dd><a href="mailto:procurement@strategiccomponent.com">procurement@strategiccomponent.com</a></dd>
+<dt>Telephone</dt><dd><a href="tel:1-888-888-8888">1-888-888-8888</a></dd>
+<dt>Address</dt><dd>2221 St. George Lane, Suite 7<br>Chico, CA 95926</dd>
 </dl><p><a class="btn solid" href="/rfq.html">Request for quote</a></p></section>''', cur="/contact.html"))
 
     write("/terms.html", shell("/terms.html", "Quote and Sales Terms | Strat Com",
@@ -240,8 +258,8 @@ def main():
         "How Strategic Components, LLC verifies and backs its parts, and the private technical library behind our sourcing of obsolete and hard-to-find components.",
         QUALITY, cur="/quality.html"))
 
-    write("/data-centers.html", shell("/data-centers.html", "AI Data Center Components | Strat Com",
-        "Surplus and hard-to-find aerospace components for AI data center projects: turbine components, heat management and gear boxes, with quick turnaround. Submit a request for quote.",
+    write("/data-centers.html", shell("/data-centers.html", "AI Data Center Power Parts | Strat Com",
+        "Continuous-service and quick-start parts for AI data center power: converted jet engines and aeroderivative turbines, seals, bearings, fuel and fluid components, gear boxes and more. Submit a request for quote.",
         DATACENTERS, cur="/data-centers.html"))
 
     # housekeeping files
@@ -278,38 +296,45 @@ TERMS = '''
 '''
 
 DATACENTERS = '''
-<section class="wrap pg narrow terms"><h1>Aerospace components for AI data center projects</h1>
-<p>Strat Com supplies surplus and hard-to-find aerospace components for the turbine, thermal and drive systems used in AI data center power and cooling projects, with the quick turnaround that project schedules require.</p>
+<section class="wrap pg narrow terms paper"><h1>Continuous-service parts for AI data center power</h1>
+<p class="lede">Strat Com supplies obsolete and hard-to-find components to the aerospace and defense industries. We are extending that supply to the continuous-service and quick-start power equipment that AI data centers require, including converted jet engines and aeroderivative turbines. We supply parts and components, not complete engines or turbines.</p>
+
+<h2>Continuous service</h2>
+<p>A turbine that generates power often runs for long continuous periods, which brings inspection and overhaul intervals around regularly. We supply the wear items and consumables those events require, including seals, bearings, filters, igniters, fuel and fluid components and sensors.</p>
+
+<h2>Quick-start power</h2>
+<p>Aeroderivative units are valued for rapid start and modular installation, which leaves little schedule margin for a missing part. When lead times are long, we search our own spare parts inventory and a network of trusted suppliers around the world for obsolete, discontinued and hard-to-find parts. State the date you need delivery on the request, and we will respond promptly.</p>
+
+<h2>Verification and documentation</h2>
+<p>Each part is verified against its NSN and part number and is accompanied by a certificate of conformance. Items carry the warranty set out in our <a href="/terms.html">quote and sales terms</a>, and any documentation beyond the certificate of conformance is stated on each quotation. A mixed list covering engine, gear box, cooling, fluid, electrical and control items may be submitted as one request.</p>
 
 <h2>What we supply</h2>
 <dl class="ruled">
-<dt>Turbine components</dt><dd>Blades, nozzles, compressors and related components for gas turbine and aeroderivative engine assemblies.</dd>
+<dt>Turbine components</dt><dd>Blades, vanes, nozzles, liners, igniters, compressor and turbine components for gas turbine and aeroderivative engine assemblies.</dd>
 <dt>Heat management</dt><dd>Coolers, heat exchangers, fans, blowers, thermostats and ducting for cooling and temperature control.</dd>
 <dt>Fluid handling</dt><dd>Pumps, valves, manifolds, hoses, couplings, filters and accumulators for cooling and fuel systems.</dd>
-<dt>Gear boxes and drives</dt><dd>Gear boxes, gears, bearings, seals and power transmission components.</dd>
+<dt>Gear boxes and drives</dt><dd>Gear boxes, gears, bearings, seals, swash plate assemblies and power transmission components.</dd>
 <dt>Electrical power</dt><dd>Transformers, circuit breakers, relays, contactors, generators, motors, converters and inverters.</dd>
 <dt>Controls and sensing</dt><dd>Actuators, controllers, sensors, connectors and cable assemblies.</dd>
-<dt>Related hardware</dt><dd>Structural components, fasteners, electronic parts and control panels.</dd>
+<dt>Related hardware</dt><dd>Structural components, airframe components, fasteners, electronic parts and control panels.</dd>
 </dl>
 <p>We will work with you to meet your needs, as they arise.</p>
 <!-- TODO: confirm the categories above match the product lines to be advertised. -->
 
-<h2>Quick turnaround for project schedules</h2>
-<p>Data center projects run on short timelines. We search our own spare parts inventory and our network of trusted suppliers around the world, and we respond to each request for quote promptly. Each part is verified against its NSN and part number and is accompanied by a certificate of conformance, and items carry the warranty set out in our <a href="/terms.html">quote and sales terms</a>.</p>
-<p>To begin, submit the NSN or part number, the quantity required and the date you need delivery. If you do not have a part number, describe the item in the additional information field and we will source it. You may also <a href="/inventory.html">search the inventory catalog</a>.</p>
-<p><a class="btn solid" href="/rfq.html">Request for quote</a></p>
-</section>
+<h2 class="nonum">Request a quote</h2>
+<p>We support engine converters and overhaul shops, developers and operators of on-site power, and the contractors who package and maintain it. Submit the part number or NSN, the engine or platform, the quantity and the date you need delivery. If you have only a description or a drawing, send that and we will source the part. You may also <a href="/inventory.html">search the inventory catalog</a>.</p>
+<p><a class="btn solid" href="/rfq.html">Request for quote</a></p></section>
 '''
 
 # ---------------------------------------------------------------- quality page
 QUALITY = '''
-<section class="wrap pg narrow terms"><h1>Quality assurance</h1>
-<p>The Strat Com sourcing department specializes in the procurement of obsolete and discontinued components. We draw on our own spare parts inventory and a network of trusted suppliers around the world, and we support dozens of OEMs. Capabilities range from nuts and bolts, transistors and resistors, to fire control panels and structural components.</p>
+<section class="wrap pg narrow terms paper"><h1>Quality assurance</h1>
+<p>The Strat Com sourcing department specializes in the procurement of obsolete and discontinued components. We draw on our own spare parts inventory and a network of trusted suppliers around the world, and we support dozens of OEMs. Capabilities range from nuts and bolts, resistors and transistors, to fire control panels, swash plate assemblies and airframe components, and everything in between.</p>
 
-<h2>Verification and quality control</h2>
+<h2 class="nonum">Verification and quality control</h2>
 <p>Each part we supply is covered by a warranty of at least 90 days, as set out in our <a href="/terms.html">quote and sales terms</a>. Before delivery, every part undergoes in-house verification of its NSN and part number against the Federal Logistics Information Service database, at no charge to the purchaser, together with quality assurance review and signature testing. Each part is accompanied by a certificate of conformance.</p>
 
-<h2>Technical library</h2>
+<h2 class="nonum">Technical library</h2>
 <p>Strat Com maintains a private technical library that is among the most extensive in the industry, covering a wide range of aircraft and engines. The library includes prints and drawings, technical orders, overhaul manuals, work scopes, instructional data, Time Compliance Technical Orders and illustrated parts manuals. It also holds kit information, including cure-date kits, overhaul kits and quick engine change kits.</p>
 <p>We hold technical support data for McDonnell Douglas and General Electric products, which assists us in resolving engineering questions as they arise, and we maintain resources to remain informed of modifications and new technology.</p>
 

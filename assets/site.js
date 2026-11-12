@@ -7,6 +7,69 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function alnum(s) { return s.toLowerCase().replace(/[^a-z0-9]/g, ""); }
 
+
+  // ---- schematic backdrop on every page but Home: a different drawing each time (shuffled deck, no repeats until all are used; ?bp=N previews one)
+  var bpEl = document.querySelector(".bp-bg");
+  if (bpEl && bpEl.getAttribute("data-bps")) {
+    var BP = bpEl.getAttribute("data-bps").split(",").filter(Boolean).map(function (s) { var p = s.split(":"); return [p[0], +p[1], +p[2]]; });
+    var lastSide = null;
+    var nextBp = function () {
+      var want = parseInt(qs.get("bp"), 10);
+      if (want >= 1 && want <= BP.length) return want - 1;
+      var key = "sc-bp-deck", deck = [], last = -1;
+      try { deck = JSON.parse(localStorage.getItem(key) || "[]").filter(function (i) { return i < BP.length; }); last = parseInt(localStorage.getItem(key + "-last"), 10); } catch (e) {}
+      if (!deck.length) {
+        for (var i = 0; i < BP.length; i++) deck.push(i);
+        for (i = deck.length - 1; i > 0; i--) { var k = Math.floor(Math.random() * (i + 1)), t = deck[i]; deck[i] = deck[k]; deck[k] = t; }
+        if (deck.length > 1 && deck[deck.length - 1] === last) { t = deck[0]; deck[0] = deck[deck.length - 1]; deck[deck.length - 1] = t; }
+      }
+      var pick = deck.pop();
+      try { localStorage.setItem(key, JSON.stringify(deck)); localStorage.setItem(key + "-last", String(pick)); } catch (e) {}
+      return pick;
+    };
+    var applyBp = function () {
+      var pick = nextBp(), d = BP[pick], right = lastSide === null ? Math.random() < 0.5 : lastSide !== "r", narrow = window.innerWidth <= 700;
+      lastSide = right ? "r" : "l";
+      try { var ls = localStorage.getItem("sc-bp-side"); if (ls) right = ls !== "r"; localStorage.setItem("sc-bp-side", right ? "r" : "l"); } catch (e) {}
+      var tall = d[2] / d[1] > 0.95, size = narrow ? "auto 380px" : (tall ? "auto 680px" : "min(900px,62vw) auto");
+      bpEl.style.backgroundImage = "url(/assets/bp/" + d[0] + ")";
+      bpEl.style.backgroundSize = size;
+      bpEl.style.backgroundPosition = (right ? "right " : "left ") + (narrow ? "-60px" : "0") + " top 30px";
+      bpEl.className = "bp-bg " + (right ? "bp-r" : "bp-l");
+      bpEl.setAttribute("data-bp", String(pick + 1));
+    };
+    applyBp();
+    window.addEventListener("pageshow", function (e) { if (e.persisted) applyBp(); });   // Back/Forward restores: pick a new one
+  }
+
+  // ---- decorative photo reel at the foot of the inventory pages (shuffled on every load; built after the page has loaded)
+  var reel = document.querySelector("[data-reel]");
+  if (reel) {
+    var buildReel = function () {
+      var n = parseInt(reel.getAttribute("data-reel"), 10) || 0, ids = [], i;
+      for (i = 1; i <= n; i++) ids.push((i < 10 ? "0" : "") + i);
+      for (i = ids.length - 1; i > 0; i--) { var k = Math.floor(Math.random() * (i + 1)), t = ids[i]; ids[i] = ids[k]; ids[k] = t; }
+      var strip = ids.map(function (id) { return '<img src="/assets/stock/' + id + '.jpg" alt="" width="240" height="160" decoding="async">'; }).join("");
+      reel.innerHTML = '<div class="reel-track" style="animation-duration:' + (n * 5) + 's;animation-delay:-' + Math.floor(Math.random() * n * 5) + 's">' + strip + strip + '</div>';
+      Array.prototype.forEach.call(reel.querySelectorAll("img"), function (im) {
+        if (im.complete) im.className = "in"; else { im.onload = function () { im.className = "in"; }; im.onerror = function () { im.className = "in"; }; }
+      });
+    };
+    if (document.readyState === "complete") buildReel(); else window.addEventListener("load", buildReel);
+  }
+
+  // ---- home page: Markets and Procurement fold up on phones only (always open on larger screens)
+  var folds = document.querySelectorAll("details.fold");
+  if (folds.length && window.matchMedia) {
+    var mq = window.matchMedia("(max-width:700px)");
+    var sync = function () { for (var f = 0; f < folds.length; f++) { if (!mq.matches) folds[f].open = true; } };
+    for (var f = 0; f < folds.length; f++) {
+      if (mq.matches) folds[f].open = false;
+      folds[f].addEventListener("toggle", function () { if (!mq.matches && !this.open) this.open = true; });
+    }
+    if (mq.addEventListener) mq.addEventListener("change", sync);
+  }
+
   // ---- quote links: plain /rfq.html in the HTML (one URL for crawlers); the part is added when a person reaches for the link
   function fillQuote(e) {
     var a = e.target.closest && e.target.closest("a.rq");

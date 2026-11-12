@@ -56,4 +56,4 @@ function doPost(e) {
 Until `FORM_ENDPOINT` is set, the form opens a pre-filled email to sales@ instead.
 
 ## Still to add
-CAGE code and SAM registration, plus the real phone number and address (the current ones are placeholders). Search for `TODO` in `build.py`, and for `1-888-888-888` and `1234 Front Street` to replace the placeholders, then run `python3 build.py`.
+CAGE code and SAM registration, plus the real phone number and address (the current ones are placeholders). Search for `TODO` in `build.py`, and for `1-888-888-8888` and `2221 St. George Lane` to replace the placeholders, then run `python3 build.py`.
