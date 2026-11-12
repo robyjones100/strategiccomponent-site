@@ -79,6 +79,11 @@ def bp_list():
             out.append(f"{f}:{int.from_bytes(h[16:20], 'big')}:{int.from_bytes(h[20:24], 'big')}")
     return ",".join(out)
 
+import hashlib
+def _asset_v(name):
+    with open(os.path.join(ROOT, "assets", name), "rb") as fh:
+        return hashlib.md5(fh.read()).hexdigest()[:8]
+
 def shell(path, title, desc, body, cur="", extra_head="", bp=True):
     def nav(href, label):
         return f'<a href="{href}"{" aria-current=page" if cur == href else ""}>{label}</a>'
@@ -90,7 +95,7 @@ def shell(path, title, desc, body, cur="", extra_head="", bp=True):
 <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png"><link rel="icon" type="image/svg+xml" href="/assets/logo-icon.svg"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css">{extra_head}</head><body>
+<link rel="stylesheet" href="/assets/style.css?v={_asset_v('style.css')}">{extra_head}</head><body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site"><div class="wrap"><a class="brand" href="/"><img src="/assets/logo.png" alt="Strat Com – Strategic Components, LLC" width="226" height="62"></a>
 <nav aria-label="Main">{nav("/","Home")}{nav("/inventory.html","Inventory")}{nav("/quality.html","Quality")}{nav("/terms.html","Terms")}{nav("/contact.html","Contact")}<a class="btn" href="/rfq.html">Request for quote</a></nav></div></header>
@@ -101,7 +106,7 @@ def shell(path, title, desc, body, cur="", extra_head="", bp=True):
 <div class="fcol"><p><strong>Site</strong><br><a href="/inventory.html">Inventory</a><br><a href="/quality.html">Quality Assurance</a><br><a href="/terms.html">Terms</a><br><a href="/data-centers.html">Data Centers</a><br><a href="/contact.html">Contact</a></p></div></div>
 <p class="fine">&copy; {datetime.date.today().year} Strategic Components, LLC. All rights reserved.</p>
 <!-- TODO: add CAGE code and SAM registration here -->
-</div></footer><script src="/assets/site.js"></script></body></html>'''
+</div></footer><script src="/assets/site.js?v={_asset_v('site.js')}"></script></body></html>'''
 
 def write(path, content):
     full = os.path.join(ROOT, path.lstrip("/"))
