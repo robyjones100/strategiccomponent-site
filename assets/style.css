@@ -88,7 +88,7 @@ address{font-style:normal;margin:.3rem 0 .8rem}
 .hero .find{margin-bottom:0}.hero .find label{margin-bottom:.3rem}
 form#rfq .btn{background:var(--amber);color:var(--deep)}form#rfq .btn:hover{background:#ffc94d}
 .hero.photo{position:relative;padding-bottom:7rem;background:url(/assets/sunset.jpg) center 86%/cover}.hero.photo::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(28,27,63,.94) 0%,rgba(28,27,63,.80) 42%,rgba(28,27,63,.30) 100%);-webkit-mask-image:linear-gradient(#000 50%,transparent 80%);mask-image:linear-gradient(#000 50%,transparent 80%)}.hero.photo>*{position:relative}
-.pband{color:#fff;padding-block:3.5rem;min-height:clamp(26rem,54.4vw,46rem);display:flex;align-items:flex-start;background:linear-gradient(90deg,rgba(4,3,43,.84) 0%,rgba(4,3,43,.50) 28%,rgba(4,3,43,0) 52%),url(/assets/eagle.jpg) center 50%/cover}
+.pband{color:#fff;padding-block:3.5rem;min-height:max(26rem,calc(min(100vw,2000px)/1.84));display:flex;align-items:flex-start;background:radial-gradient(ellipse 30% 24% at 50% 14%,rgba(4,3,43,.74) 0%,rgba(4,3,43,.5) 55%,rgba(4,3,43,0) 100%) center/min(100%,2000px) 100% no-repeat,url(/assets/eagle.jpg) center 70%/min(100%,2000px) auto no-repeat,#04032b}
 .pband .wrap{width:100%}.pband h2{color:#fff;margin:0 0 .6rem;font-size:1.9rem;max-width:26ch}.pband p{max-width:58ch;font-size:1.15rem;margin:0;color:#e6e8f2}
 @media(max-width:700px){.hero.photo{padding-bottom:5.5rem;background:url(/assets/sunset.jpg) 68% bottom/cover}.hero.photo::before{background:rgba(28,27,63,.88)}.pband{min-height:34rem;background:linear-gradient(rgba(4,3,43,.9) 0%,rgba(4,3,43,.75) 38%,rgba(4,3,43,0) 70%),url(/assets/eagle.jpg) 52% bottom/cover}.pband h2{font-size:1.5rem}}
 
@@ -157,3 +157,5 @@ form#rfq legend{float:left;width:100%;padding:0;margin:0 0 .5rem;font-weight:500
 form#rfq legend+*{clear:both}
 form#rfq label.chk{padding:.3rem 0}
 form#rfq input[type=checkbox]{width:1.1rem;height:1.1rem;margin:0;flex:none;accent-color:var(--ink)}
+@media(min-width:701px){.pband{display:flex;min-height:min(calc(100vw/1.55),1250px);padding:3.5rem 0;align-items:flex-start;background:linear-gradient(90deg,rgba(4,3,43,.84) 0%,rgba(4,3,43,.50) 28%,rgba(4,3,43,0) 52%),url(/assets/eagle.jpg) center 74%/cover no-repeat,#04032b}}
+@media(max-width:700px){.pband{display:block;min-height:calc(100vw/1.5 + 6.4rem);padding:1.5rem 0 0;background:linear-gradient(#04032b 0,rgba(4,3,43,.78) 18%,rgba(4,3,43,0) 44%) center bottom/100% calc(100vw/1.5) no-repeat,url(/assets/eagle.jpg) center bottom/100% auto no-repeat,#04032b}.pband .wrap{padding-bottom:0}}

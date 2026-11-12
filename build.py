@@ -218,7 +218,7 @@ def main():
 <dl class="ruled"><dt>Catalog</dt><dd>Each listing identifies the NSN, part number, manufacturer, description and end use.</dd>
 <dt>Pricing</dt><dd>Pricing and availability are provided by quotation. Please submit the NSN or part number and the quantity required.</dd>
 <dt>Requirements</dt><dd>Please indicate on the request whether it is for immediate purchase or in support of a government bid.</dd></dl></details></div></section>
-<section class="pband"><div class="wrap"><h2>Sustaining American-built systems, from legacy fleets to future power</h2><p>From the platforms that built the supply chain to the turbines that will power what comes next, we source the parts that keep them in service.</p></div></section>
+<section class="pband"><div class="wrap"><h2>Sustaining American-built systems, legacy fleets to the future of power</h2><p>From the platforms that built the supply chain to the turbines that will power what comes next, we source the parts that keep them in service.</p></div></section>
 <section class="cta"><div class="wrap"><h2>Item not listed in the catalog?</h2><a class="btn solid" href="/rfq.html">Request for quote</a></div></section>''',
         cur="/", extra_head=org, bp=False))
 
